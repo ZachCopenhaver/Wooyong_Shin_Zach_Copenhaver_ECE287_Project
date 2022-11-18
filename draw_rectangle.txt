@@ -1,0 +1,49 @@
+module display(
+	input resetn, 
+	input clock,
+	output [9:0]VGA_R, 
+	output [9:0]VGA_G, 
+	output [9:0]VGA_B, 
+	output VGA_HS, 
+	output VGA_VS, 
+	output VGA_BLANK, 
+	output VGA_SYNC, 
+	output VGA_CLK
+);
+
+	
+	reg [2:0]colour;
+	/* Colours:
+	000 = dark green
+	001 = purple
+	010 = light green
+	011 = light blue
+	100 = orange
+	101 = pink
+	110 = yellow
+	111 = white
+	*/
+	reg [8:0]width;
+	reg [7:0]height;
+	reg [8:0]xstart;
+	reg [7:0]ystart;
+	wire done;
+	wire [8:0]x;
+	wire [7:0]y;
+	
+	// resetn = rst
+	// clock = clk
+	vga_adapter my_vga(resetn, clock, colour, x, y, 1'b1, VGA_R, VGA_G, VGA_B, VGA_HS, VGA_VS, VGA_BLANK, VGA_SYNC, VGA_CLK);
+	
+	rectangle rect0(clock, resetn, width, height, xstart, ystart, colour, x, y, done);
+	
+	always @ (*)
+	begin
+		width = 9'd50;
+		height = 9'd50;
+		xstart = 9'd50;
+		ystart = 9'd50;
+		colour = 3'b111;
+	end
+	
+endmodule
