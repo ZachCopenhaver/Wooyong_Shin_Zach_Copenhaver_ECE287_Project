@@ -31,7 +31,7 @@ module keyboard(
 //	output reg [7:0]CODEWORD,
    output reg [8:0]x2	//8 LEDs
    );
-
+ 
 	//wire [7:0] ARROW_UP = 8'h75;	//codes for arrows
 	//wire [7:0] ARROW_DOWN = 8'h72;
 	wire [7:0] ARROW_LEFT = 8'h6B;
