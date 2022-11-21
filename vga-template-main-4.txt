@@ -1,0 +1,166 @@
+module vga_template(clk, rst, vga_output_data);
+	
+	input clk, rst;
+	output [28:0] vga_output_data;
+	
+	reg [7:0] r, g, b;
+	wire [9:0] x, y;
+	
+	reg [8:0] shift;
+	
+	wire [23:0]background;
+	assign background = {8'hF, 8'hF, 8'hF};
+	
+	reg [23:0]color;
+	
+	parameter white = 24'hFFFFFF,
+				 black = 24'h000000,
+				 red = 24'hFF0000,
+				 green = 24'h00FF00,
+				 blue = 24'h0000FF,
+				 yellow = 24'hFFFF00,
+				 pink = 24'hFF00FF,
+				 cyan = 24'h00FFFF;
+	
+	reg [9:0]xl, yt;
+	//wire [9:0]xr, xdiff, yb, ydiff;
+	//reg [9:0]xdiff, ydiff;
+	//wire [9:0]xr, yb;
+	//wire rectx, recty;
+	reg [9:0]xr, xdiff, yb, ydiff;
+	//reg rectx, recty;
+	
+	//assign xr = xl + xdiff;
+	//assign yb = yt + ydiff;
+	//assign xdiff = 10'd100;
+	//assign ydiff = 10'd100;
+	//assign rectx = (xl <= x & x < xr);
+	//assign recty = (yt <= y & y < yb);
+	
+	vga disp(clk, rst, r, g, b, x, y, vga_output_data);
+	
+	reg [7:0]count;
+	
+	reg [2:0]S;
+	reg [2:0]NS;
+	
+	parameter START = 3'd0,
+				 INIT = 3'd1,
+				 RIGHT = 3'd2,
+				 UPDATE = 3'd3,
+				 IDLE = 3'd4;
+	
+	always @ (posedge clk or negedge rst)
+	begin
+		if (rst == 1'b0)
+			S <= START;
+		else
+			S <= NS;
+	end
+	
+	always @ (*)
+	begin
+		case (S)
+			START: NS = INIT;
+			INIT: NS = UPDATE;
+			UPDATE: NS = RIGHT;
+			RIGHT: NS = IDLE;
+			IDLE: NS = UPDATE;
+		endcase
+	end
+	
+	wire recty;
+	assign recty = (10'd100 <= y && y < 10'd200);
+	
+	always @ (posedge clk or negedge rst)
+	begin
+		if (rst == 1'b0)
+		begin
+			xl <= 10'd00;
+			yt <= 10'd00;
+			shift <= 0;
+			r <= 0;
+			g <= 0;
+			b <= 0;
+		end
+		else 
+			case (S)
+				START:
+				begin
+					xl <= 10'd1;
+					yt = 10'd1;
+				end
+				INIT:
+				begin
+					if (10'd100 <= x && x < 10'd200)
+						if (10'd100 <= y && y < 10'd200)
+							begin
+								r <= 8'hFF;
+								g <= 8'h00;
+								b <= 8'h00;
+							end
+					else
+					begin
+						r <= 8'hFF;
+						g <= 8'hFF;
+						b <= 8'hFF;
+					end
+				end
+				UPDATE: 
+				begin
+					if (xl >= 10'd640)
+						xl <= 10'd100;
+					else
+						xl <= xl + 1'b1;
+				end
+				RIGHT:
+				begin
+					if ((10'd100 + xl) <= x && x < (xl + 10'd100))
+						if (10'd100 <= y && y < 10'd200)
+							begin
+								r <= 8'hFF;
+								g <= 8'h00;
+								b <= 8'h00;
+							end
+					else
+					begin
+						r <= 8'hFF;
+						g <= 8'hFF;
+						b <= 8'hFF;
+					end
+				end
+			endcase
+	end
+	
+
+endmodule
+
+/*
+	always @(posedge clk or negedge rst) begin
+	
+		if (rst == 1'b0) begin
+			
+			r <= 0;
+			g <= 0;
+			b <= 0;
+			shift <= 8'b00000001;
+			
+		end else begin
+		
+			r <= x[7:0];
+			g <= y[9:2];
+			b <= shift;
+			shift <= {shift[6:0], shift[7] ^ shift[6]};
+		
+		end
+	end
+		*/
+		
+/* in vga.v:
+			x_sync_delay <= x_sync;
+			y_sync_delay <= y_sync;
+			x_sync_delay2 <= ~x_sync_delay;
+			y_sync_delay2 <= ~y_sync_delay;
+			vga_output_data[24] <= ~x_sync_delay2;
+			vga_output_data[25] <= ~y_sync_delay2;
+*/
