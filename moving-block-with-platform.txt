@@ -1,0 +1,165 @@
+module vga_template(clk, rst, vga_output_data);
+	
+	input clk, rst;
+	output [28:0] vga_output_data;
+	
+	reg [7:0] r, g, b;
+	wire [9:0] x, y;
+	
+	reg [8:0] shift;
+	
+	wire [23:0]background;
+	assign background = {8'hF, 8'hF, 8'hF};
+	
+	reg [23:0]color;
+	
+	parameter white = 24'hFFFFFF,
+				 black = 24'h000000,
+				 red = 24'hFF0000,
+				 green = 24'h00FF00,
+				 blue = 24'h0000FF,
+				 yellow = 24'hFFFF00,
+				 pink = 24'hFF00FF,
+				 cyan = 24'h00FFFF;
+	
+	reg [9:0]xl, yt;
+	//wire [9:0]xr, xdiff, yb, ydiff;
+	//reg [9:0]xdiff, ydiff;
+	//wire [9:0]xr, yb;
+	//wire rectx, recty;
+	reg [9:0]xr, xdiff, yb, ydiff;
+	reg rectx, recty;
+	reg platformx, platformy;
+	
+	//assign xr = xl + xdiff;
+	//assign yb = yt + ydiff;
+	//assign xdiff = 10'd100;
+	//assign ydiff = 10'd100;
+	//assign rectx = (xl <= x & x < xr);
+	//assign recty = (yt <= y & y < yb);
+	
+	vga disp(clk, rst, r, g, b, x, y, vga_output_data);
+	//vga disp(clk, rst, color[23:16], color[15:8], color[7:0], x, y, vga_output_data);
+	
+	reg [2:0]S;
+	reg [2:0]NS;
+	
+	parameter START = 3'd0,
+				 INIT = 3'd1,
+				 DRAW = 3'd2,
+				 DRAW2 = 3'd3;
+	
+	always @ (posedge clk or negedge rst)
+	begin
+		if (rst == 1'b0)
+			S <= START;
+		else
+			S <= NS;
+	end
+	
+	always @ (*)
+	begin
+		case (S)
+			START: NS = INIT;
+			INIT: NS = DRAW;
+			DRAW: 
+			if (slowClock == 1'b1)
+				NS = DRAW2;
+			else
+				NS = DRAW;
+			DRAW2: 
+			if (slowClock == 1'b1)
+				NS = DRAW;
+			else 
+				NS = DRAW2;
+		endcase
+	end
+	
+	always @ (posedge clk or negedge rst)
+	begin
+		if (rst == 1'b0)
+		begin
+			xl <= 10'd0;
+			yt <= 10'd0;
+			shift <= 0;
+		end
+		else 
+			case (S)
+				START: 
+				begin
+					xl <= 10'd100;
+					yt <= 10'd100;
+					xdiff <= 10'd100;
+					ydiff <= 10'd100;
+				end
+				INIT:
+				begin
+					xr <= xl + xdiff;
+					yb <= yt + ydiff;
+				end
+				DRAW: 
+				begin
+					rectx <= (10'd100 <= x & x < 10'd200);
+					recty <= (10'd100 <= y & y < 10'd200);
+				end
+				DRAW2:
+				begin
+					rectx <= (10'd110 <= x & x < 10'd210);
+					recty <= (10'd100 <= y & y < 10'd200);
+				end
+			endcase
+	end
+	
+	always @ (posedge clk or negedge rst)
+	begin
+		if (rst == 1'b0)
+		begin
+			r <= 0;
+			g <= 0;
+			b <= 0;
+		end
+		else 
+		begin
+			if (rectx & recty)
+			begin
+				r <= 8'hFF;
+				g <= 8'h00;
+				b <= 8'h00;
+			end
+			else if (platformx & platformy)
+			begin
+				r <= 8'h0;
+				g <= 8'h0;
+				b <= 8'hFF;
+			end
+			else 
+			begin
+				r <= 8'hFF;
+				g <= 8'hFF;
+				b <= 8'hFF;
+			end
+		end
+	end
+	
+	always @ (*)
+	begin
+		platformx = (10'd0 <= x & x < 10'd640);
+		platformy = (10'd200 <= y & y < 10'd250);
+	end
+	
+	reg [31:0]counter;
+	reg slowClock;
+	
+	always @(posedge clk)
+	begin
+		counter <= counter + 1'b1;
+		if (counter >= 32'd35000000)
+		begin
+			counter <= 32'd0;
+			slowClock <= 1'b1;
+		end
+		else 
+			slowClock = 1'b0;
+	end
+
+endmodule
