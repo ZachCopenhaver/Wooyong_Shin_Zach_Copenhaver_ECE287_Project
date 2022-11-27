@@ -1,0 +1,262 @@
+module vga_template(clk, rst, vga_output_data);
+	
+	input clk, rst;
+	output [28:0] vga_output_data;
+	
+	reg [7:0] r, g, b;
+	wire [9:0] x, y;
+	
+	// variables for the size and position of the object
+	reg [9:0]xl, yt;
+	// rectx and recty are both true when x is in the area that should be colored for the object
+	reg rectx, recty;
+	
+	reg [9:0]p_xl, p_yt;
+	reg playerx, playery;
+	
+	// define the size of the platform
+	wire platformx, platformy;
+	assign platformx = (10'd0 <= x & x < 10'd640);
+	assign platformy = (10'd200 <= y & y < 10'd250);
+	
+	reg go_right; // 0 means moving left, 1 means moving right
+	reg p_go_right;
+	
+	vga disp(clk, rst, r, g, b, x, y, vga_output_data);
+	
+	reg [2:0]S;
+	reg [2:0]NS;
+	
+	parameter START = 3'd0,
+				 INIT = 3'd1,
+				 DRAW = 3'd2,
+				 ERROR = 3'hF;
+	
+	always @ (posedge clk or negedge rst)
+	begin
+		if (rst == 1'b0)
+			S <= START;
+		else
+			S <= NS;
+	end
+	
+	always @ (*)
+	begin
+		case (S)
+			START: NS = INIT;
+			INIT: NS = DRAW;
+			DRAW: 
+			if (slowClock == 1'b1)
+				NS = INIT;
+			else
+				NS = DRAW;
+			default: NS = ERROR;
+		endcase
+	end
+	
+	always @ (posedge clk or negedge rst)
+	begin
+		if (rst == 1'b0)
+		begin
+			xl <= 10'd0;
+			yt <= 10'd0;
+		end
+		else 
+			case (S)
+				START: 
+				begin
+					xl <= 10'd100;
+					yt <= 10'd100;
+					go_right <= 1'b1;
+				end
+				INIT:
+				begin
+					// if the object hits the right side of the screen
+					// xl >= (640 - xwidth)
+					if (xl >= 10'd540)
+					begin
+						go_right <= 1'b0; // the object is now moving to the left
+						rectx <= (10'd100 <= x & x < 10'd150);
+						recty <= (10'd100 <= y & y < 10'd200);
+						xl <= xl - 10'd5; // move left
+					end
+					// if the object approaches the left side of the screen
+					// need to check if x is within a certain range because xl might overflow when it hits the wall
+					else if (xl <= 10'd10)
+					begin
+						go_right <= 1'b1; // the object is now moving to the right
+						rectx <= (10'd100 <= x & x < 10'd150);
+						recty <= (10'd100 <= y & y < 10'd200);
+						xl <= xl + 10'd5; // move right
+					end
+					// if the object is moving to the right
+					else if (go_right == 1'b1)
+					begin
+						rectx <= (10'd100 <= x & x < 10'd150);
+						recty <= (10'd100 <= y & y < 10'd200);
+						xl <= xl + 10'd5; // move right
+					end
+					// if the object is moving to the left
+					else if (go_right == 1'b0)
+					begin
+						rectx <= (10'd100 <= x & x < 10'd150);
+						recty <= (10'd100 <= y & y < 10'd200);
+						xl <= xl - 10'd5; // move left
+					end
+				end
+				DRAW: 
+				begin
+					rectx <= (xl <= x & x < xl + 10'd50);
+					recty <= (10'd100 <= y & y < 10'd200);
+				end
+			endcase
+	end
+	
+	// finite state machine for the player
+	reg [2:0]SP;
+	reg [2:0]NSP;
+	
+	parameter	P_START = 3'd0,
+					P_INIT = 3'd1,
+					P_DRAW = 3'd2,
+					P_ERROR = 3'hF;
+					
+	always @(posedge clk or negedge rst)
+	begin
+		if (rst == 1'b0)
+			SP <= P_START;
+		else
+			SP <= NSP;
+	end
+	
+	always @(*)
+	begin
+		case (SP)
+			P_START: NSP = P_INIT;
+			P_INIT: NSP = P_DRAW;
+			P_DRAW: 
+				if (slowClock == 1'b1)
+					NSP = P_INIT;
+				else
+					NSP = P_DRAW;
+			default: NSP = P_ERROR;
+		endcase
+	end
+	
+	always @(posedge clk or negedge rst)
+	begin
+		if (rst == 1'b0)
+		begin
+			p_xl <= 10'd0;
+			p_yt <= 10'd0;
+		end
+		else
+		begin
+			case (SP)
+				P_START:
+				begin
+					p_xl <= 10'd300;
+					p_yt <= 10'd300;
+					p_go_right <= 1'b1;
+				end
+				P_INIT:
+				begin
+					if (p_xl >= 10'd540)
+					begin
+						p_go_right <= 1'b0; // the object is now moving to the left
+						playerx <= (10'd300 <= x & x < 10'd400);
+						playery <= (10'd300 <= y & y < 10'd350);
+						p_xl <= p_xl - 10'd10; // move left
+					end
+					else if (p_xl <= 10'd10)
+					begin
+						p_go_right <= 1'b1; // the object is now moving to the right
+						playerx <= (10'd300 <= x & x < 10'd400);
+						playery <= (10'd300 <= y & y < 10'd350);
+						p_xl <= p_xl + 10'd10; // move right
+					end
+					else if (p_go_right == 1'b1)
+					begin
+						playerx <= (10'd300 <= x & x < 10'd400);
+						playery <= (10'd300 <= y & y < 10'd350);
+						p_xl <= p_xl + 10'd10; // move right
+					end
+					else if (p_go_right == 1'b0) 
+					begin
+						playerx <= (10'd300 <= x & x < 10'd400);
+						playery <= (10'd300 <= y & y < 10'd350);
+						p_xl <= p_xl - 10'd10; // move left
+					end
+				end
+				P_DRAW:
+				begin
+					playerx <= (p_xl <= x & x < p_xl + 10'd100);
+					playery <= (10'd300 <= y & y < 10'd350);
+				end
+			endcase
+		end
+	end
+	
+	// draws everything onto the screen every clock cycle
+	/* should be:
+		if (moving objects)
+		else if (stationary objects)
+		else (background) */
+	always @ (posedge clk or negedge rst)
+	begin
+		if (rst == 1'b0)
+		begin
+			r <= 0;
+			g <= 0;
+			b <= 0;
+		end
+		else 
+		begin
+			// draw the object
+			if (rectx & recty)
+			begin
+				r <= 8'hFF;
+				g <= 8'h00;
+				b <= 8'h00;
+			end
+			// draw the player object
+			else if (playerx & playery)
+			begin
+				r <= 8'h0;
+				g <= 8'hFF;
+				b <= 8'h0;
+			end
+			// draw the platform the object is on
+			else if (platformx & platformy)
+			begin
+				r <= 8'h0;
+				g <= 8'h0;
+				b <= 8'hFF;
+			end
+			// draw the background
+			else
+			begin
+				r <= 8'hFF;
+				g <= 8'hFF;
+				b <= 8'hFF;
+			end
+		end
+	end
+	
+	reg [31:0]counter;
+	reg slowClock;
+	
+	// slows down the clock so that we can see the object moving
+	always @(posedge clk)
+	begin
+		counter <= counter + 1'b1;
+		if (counter >= 32'd2500000)
+		begin
+			counter <= 32'd0;
+			slowClock <= 1'b1;
+		end
+		else 
+			slowClock = 1'b0;
+	end
+
+endmodule
