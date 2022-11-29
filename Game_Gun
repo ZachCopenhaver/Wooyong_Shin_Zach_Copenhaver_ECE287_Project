@@ -1,0 +1,589 @@
+module game(
+	input Right_Gun,
+	input Left_Gun,
+	input clk,
+	input rst,
+	output [28:0]vga_output_data
+);
+
+	wire [9:0]x, y;
+	reg [23:0]color;
+	
+	parameter white  	= 24'b111111111111111111111111,
+				 black  	= 24'b000000000000000000000000,
+				 red 	  	= 24'b111111110000000000000000,
+				 green  	= 24'b000000001111111100000000,
+				 blue   	= 24'b000000000000000011111111,
+				 yellow 	= 24'b111111111111111100000000,
+				 pink		= 24'b111111110000000011111111,
+				 cyan		= 24'b000000001111111111111111;
+				 
+	// define the size of the platform
+	wire platformx, platformy;
+	assign platformx = (10'd0 <= x & x < 10'd640);
+	assign platformy = (10'd200 <= y & y < 10'd250);
+	
+	wire enemyx1, enemyy1;
+	
+	wire gunbodyL1x, gunbodyL1y;
+	wire gunbodyL2x, gunbodyL2y;
+	wire gunbodyL3x, gunbodyL3y;
+	wire gunbodyL4x, gunbodyL4y;
+	wire gunbodyL5x, gunbodyL5y;
+   wire  gunhead1x, gunhead1y;
+	wire gunhead2x, gunhead2y;
+	wire gunhead3x, gunhead3y;
+	wire gunhead4x, gunhead4y;
+	wire gunhead5x, gunhead5y;
+	wire gunhead6x, gunhead6y;
+	wire gunhead7x, gunhead7y;
+	wire gunhead8x, gunhead8y;
+	wire gunhead9x, gunhead9y;
+	wire aimx, aimy;
+	wire gunbodyR1x, gunbodyR1y;
+	wire gunbodyR2x, gunbodyR2y;
+	wire gunbodyR3x, gunbodyR3y;
+	wire gunbodyR4x, gunbodyR4y;
+	wire gunbodyR5x, gunbodyR5y;
+	
+
+	vga disp(clk, rst, color[23:16], color[15:8], color[7:0], x, y, vga_output_data);
+	
+	moving_object enemy1(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd100, 	// xstart
+		10'd100, 	// ystart
+		10'd50, 		// xdiff
+		10'd100, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd640, 	// right_bound
+		10'd10, 		// left_bound
+		10'd10, 		// top_bound
+		10'd200, 	// bottom_bound
+		enemyx1, 	// objectx
+		enemyy1		// objecty
+								);
+		user_object aim(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd318, 	// xstart
+		10'd300, 	// ystart
+		10'd4, 	// xdiff
+		10'd10,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd624, 	// right_bound
+		10'd26, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		aimx, 	// objectx
+		aimy		// objecty	
+		);						
+		user_object gunbodyL1(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd302, 	// xstart
+		10'd428, 	// ystart
+		10'd8, 	// xdiff
+		10'd52,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd612, 	// right_bound
+		10'd10, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunbodyL1x, 	// objectx
+		gunbodyL1y		// objecty	
+		);
+		user_object gunbodyL2(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd306, 	// xstart
+		10'd420, 	// ystart
+		10'd4, 	// xdiff
+		10'd8,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd612, 	// right_bound
+		10'd14, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunbodyL2x, 	// objectx
+		gunbodyL2y		// objecty	
+		);
+		user_object gunbodyL3(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd310, 	// xstart
+		10'd328, 	// ystart
+		10'd2, 	// xdiff
+		10'd136,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd614, 	// right_bound
+		10'd18, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunbodyL3x, 	// objectx
+		gunbodyL3y		// objecty	
+		);
+		user_object gunbodyL4(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd312, 	// xstart
+		10'd326, 	// ystart
+		10'd4, 	// xdiff
+		10'd106,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd618, 	// right_bound
+		10'd20, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunbodyL4x, 	// objectx
+		gunbodyL4y		// objecty	
+		);
+		user_object gunbodyL5(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd312, 	// xstart
+		10'd432, 	// ystart
+		10'd2, 	// xdiff
+		10'd16,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd616, 	// right_bound
+		10'd20, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunbodyL5x, 	// objectx
+		gunbodyL5y		// objecty	
+		);
+		user_object gunhead1(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd310, 	// xstart
+		10'd464, 	// ystart
+		10'd2, 	// xdiff
+		10'd16,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd614, 	// right_bound
+		10'd18, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunhead1x, 	// objectx
+		gunhead1y		// objecty	
+		);
+			user_object gunhead2(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd312, 	// xstart
+		10'd442, 	// ystart
+		10'd2, 	// xdiff
+		10'd38,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd616, 	// right_bound
+		10'd20, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunhead2x, 	// objectx
+		gunhead2y		// objecty	
+		);
+			user_object gunhead3(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd314, 	// xstart
+		10'd432, 	// ystart
+		10'd2, 	// xdiff
+		10'd48,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd618, 	// right_bound
+		10'd22, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunhead3x, 	// objectx
+		gunhead3y		// objecty	
+		);
+			user_object gunhead4(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd316, 	// xstart
+		10'd310, 	// ystart
+		10'd8, 	// xdiff
+		10'd170,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd626, 	// right_bound
+		10'd24, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunhead4x, 	// objectx
+		gunhead4y		// objecty	
+		);
+			user_object gunhead5(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd324, 	// xstart
+		10'd432, 	// ystart
+		10'd2, 	// xdiff
+		10'd48,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd628, 	// right_bound
+		10'd32, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunhead5x, 	// objectx
+		gunhead5y		// objecty	
+		);
+			user_object gunhead6(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd326, 	// xstart
+		10'd442, 	// ystart
+		10'd2, 	// xdiff
+		10'd38,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd630, 	// right_bound
+		10'd34, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunhead6x, 	// objectx
+		gunhead6y		// objecty	
+		);
+			user_object gunhead7(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd328, 	// xstart
+		10'd464, 	// ystart
+		10'd2, 	// xdiff
+		10'd16,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd632, 	// right_bound
+		10'd36, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunhead7x, 	// objectx
+		gunhead7y		// objecty	
+		);
+			user_object gunhead8(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd316, 	// xstart
+		10'd304, 	// ystart
+		10'd2, 	// xdiff
+		10'd6,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd620, 	// right_bound
+		10'd24, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunhead8x, 	// objectx
+		gunhead8y		// objecty	
+		);
+		user_object gunhead9(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd322, 	// xstart
+		10'd304, 	// ystart
+		10'd2, 	// xdiff
+		10'd6,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd626, 	// right_bound
+		10'd30, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunhead9x, 	// objectx
+		gunhead9y		// objecty	
+		);
+		user_object gunbodyR1(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd330, 	// xstart
+		10'd428, 	// ystart
+		10'd8, 	// xdiff
+		10'd52,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd640, 	// right_bound
+		10'd38, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunbodyR1x, 	// objectx
+		gunbodyR1y		// objecty	
+		);
+		user_object gunbodRL2(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd330, 	// xstart
+		10'd420, 	// ystart
+		10'd4, 	// xdiff
+		10'd8,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd636, 	// right_bound
+		10'd38, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunbodyR2x, 	// objectx
+		gunbodyR2y		// objecty	
+		);
+		user_object gunbodyR3(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd328, 	// xstart
+		10'd328, 	// ystart
+		10'd2, 	// xdiff
+		10'd136,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd632, 	// right_bound
+		10'd36, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunbodyR3x, 	// objectx
+		gunbodyR3y		// objecty	
+		);
+		user_object gunbodyR4(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd324, 	// xstart
+		10'd326, 	// ystart
+		10'd4, 	// xdiff
+		10'd106,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd630, 	// right_bound
+		10'd32, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunbodyR4x, 	// objectx
+		gunbodyR4y		// objecty	
+		);
+		user_object gunbodyR5(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd326, 	// xstart
+		10'd432, 	// ystart
+		10'd2, 	// xdiff
+		10'd16,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd630, 	// right_bound
+		10'd34, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunbodyR5x, 	// objectx
+		gunbodyR5y		// objecty	
+		);
+	
+	// draws everything onto the screen every clock cycle
+	/* should be:
+		if (moving objects)
+		else if (stationary objects)
+		else (background) */
+	always @ (posedge clk or negedge rst)
+	begin
+		if (rst == 1'b0)
+		begin
+			color <= 0;
+		end
+		else 
+		begin
+			// draw the object
+			if (enemyx1 & enemyy1)
+			begin
+				color <= red;
+			end
+			
+			
+			else if (aimx & aimy)
+			begin
+				color <= red;
+			end
+			else if (gunbodyL1x & gunbodyL1y)
+			begin
+				color <= white;
+			end
+			else if (gunbodyL2x & gunbodyL2y)
+			begin
+				color <= white;
+			end
+			else if (gunbodyL3x & gunbodyL3y)
+			begin
+				color <= white;
+			end
+			else if (gunbodyL4x & gunbodyL4y)
+			begin
+				color <= white;
+			end
+			else if (gunbodyL5x & gunbodyL5y)
+			begin
+				color <= white;
+			end
+			else if (gunhead1x & gunhead1y)
+			begin
+				color <= {8'd150,8'd150,8'd150};
+			end
+			else if (gunhead2x & gunhead2y)
+			begin
+				color <= {8'd150,8'd150,8'd150};
+			end
+			else if (gunhead3x & gunhead3y)
+			begin
+				color <= {8'd150,8'd150,8'd150};
+			end
+			else if (gunhead4x & gunhead4y)
+			begin
+				color <= {8'd150,8'd150,8'd150};
+			end
+			else if (gunhead5x & gunhead5y)
+			begin
+				color <= {8'd150,8'd150,8'd150};
+			end
+			else if (gunhead6x & gunhead6y)
+			begin
+				color <= {8'd150,8'd150,8'd150};
+			end
+			else if (gunhead7x & gunhead7y)
+			begin
+				color <= {8'd150,8'd150,8'd150};
+			end
+			else if (gunhead8x & gunhead8y)
+			begin
+				color <= {8'd150,8'd150,8'd150};
+			end
+			else if (gunhead9x & gunhead9y)
+			begin
+				color <= {8'd150,8'd150,8'd150};
+			end
+			else if (gunbodyR1x & gunbodyR1y)
+			begin
+				color <= white;
+			end
+			else if (gunbodyR2x & gunbodyR2y)
+			begin
+				color <= white;
+			end
+			else if (gunbodyR3x & gunbodyR3y)
+			begin
+				color <= white;
+			end
+			else if (gunbodyR4x & gunbodyR4y)
+			begin
+				color <= white;
+			end
+			else if (gunbodyR5x & gunbodyR5y)
+			begin
+				color <= white;
+			end
+			
+			
+			
+			
+
+			// draw the platform the object is on
+			else if (platformx & platformy)
+			begin
+				color <= blue;
+			end
+			// draw the background
+			else
+			begin
+				color <= black;
+			end
+		end
+	end
+
+endmodule 
