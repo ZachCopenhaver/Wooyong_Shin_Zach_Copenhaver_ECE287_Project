@@ -1,0 +1,1427 @@
+module game(
+	input Right_Gun,
+	input Left_Gun,
+	input clk,
+	input rst,
+	output [28:0]vga_output_data
+);
+
+	wire [9:0]x, y;
+	reg [23:0]color;
+	
+	parameter white  	= 24'b111111111111111111111111,
+				 black  	= 24'b000000000000000000000000,
+				 red 	  	= 24'b111111110000000000000000,
+				 green  	= 24'b000000001111111100000000,
+				 blue   	= 24'b000000000000000011111111,
+				 yellow 	= 24'b111111111111111100000000,
+				 pink		= 24'b111111110000000011111111,
+				 cyan		= 24'b000000001111111111111111;
+				 
+	// define the size of the platform
+	wire platformx, platformy;
+	assign platformx = (10'd0 <= x & x < 10'd640);
+	assign platformy = (10'd200 <= y & y < 10'd250);
+	
+	wire aeyeball1x, aeyeball1y;
+	wire aeyeball2x, aeyeball2y;
+	wire aeyeball3x, aeyeball3y;
+	
+	wire aeyeleftx, aeyelefty;
+	wire aeyecenterx, aeyecentery;
+	wire aeyerightx, aeyerighty;
+	
+	
+	wire ahead1x, ahead1y;
+	wire ahead2x, ahead2y;
+	wire ahead3x, ahead3y;
+	wire ahead4x, ahead4y;
+	
+	wire aleg1x, aleg1y;
+	wire aleg2x, aleg2y;
+	wire aleg3x, aleg3y;
+	wire aleg4x, aleg4y;
+	wire aleg5x, aleg5y;
+	wire aleg6x, aleg6y;
+	wire aleg7x, aleg7y;
+	wire aleg8x, aleg8y;
+	
+	wire eyeball1x, eyeball1y;
+	wire eyeball2x, eyeball2y;
+	wire eyeball3x, eyeball3y;
+	
+	wire eyeleftx, eyelefty;
+	wire eyecenterx, eyecentery;
+	wire eyerightx, eyerighty;
+	
+	
+	wire head1x, head1y;
+	wire head2x, head2y;
+	wire head3x, head3y;
+	wire head4x, head4y;
+	
+	wire leg1x, leg1y;
+	wire leg2x, leg2y;
+	wire leg3x, leg3y;
+	wire leg4x, leg4y;
+	wire leg5x, leg5y;
+	wire leg6x, leg6y;
+	wire leg7x, leg7y;
+	wire leg8x, leg8y;
+	
+	wire gunbodyL1x, gunbodyL1y;
+	wire gunbodyL2x, gunbodyL2y;
+	wire gunbodyL3x, gunbodyL3y;
+	wire gunbodyL4x, gunbodyL4y;
+	wire gunbodyL5x, gunbodyL5y;
+   wire  gunhead1x, gunhead1y;
+	wire gunhead2x, gunhead2y;
+	wire gunhead3x, gunhead3y;
+	wire gunhead4x, gunhead4y;
+	wire gunhead5x, gunhead5y;
+	wire gunhead6x, gunhead6y;
+	wire gunhead7x, gunhead7y;
+	wire gunhead8x, gunhead8y;
+	wire gunhead9x, gunhead9y;
+	wire aimx, aimy;
+	wire gunbodyR1x, gunbodyR1y;
+	wire gunbodyR2x, gunbodyR2y;
+	wire gunbodyR3x, gunbodyR3y;
+	wire gunbodyR4x, gunbodyR4y;
+	wire gunbodyR5x, gunbodyR5y;
+	
+	
+
+	vga disp(clk, rst, color[23:16], color[15:8], color[7:0], x, y, vga_output_data);
+	
+moving_object aleg1(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd199, 	// xstart
+		10'd176, 	// ystart
+		10'd2, 		// xdiff
+		10'd8, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd618, 	// right_bound
+		10'd13, 		// left_bound
+		10'd36, 		// top_bound
+		10'd192, 	// bottom_bound
+		aleg1x, 	// objectx
+		aleg1y		// objecty
+								);	
+moving_object aleg2(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd197, 	// xstart
+		10'd182, 	// ystart
+		10'd2, 		// xdiff
+		10'd8, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd616, 	// right_bound
+		10'd11, 		// left_bound
+		10'd42, 		// top_bound
+		10'd198, 	// bottom_bound
+		aleg2x, 	// objectx
+		aleg2y		// objecty
+								);								
+moving_object aleg3(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd206, 	// xstart
+		10'd176, 	// ystart
+		10'd2, 		// xdiff
+		10'd11, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd624, 	// right_bound
+		10'd20, 		// left_bound
+		10'd36, 		// top_bound
+		10'd195, 	// bottom_bound
+		aleg3x, 	// objectx
+		aleg3y		// objecty
+								);	
+moving_object aleg4(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd204, 	// xstart
+		10'd185, 	// ystart
+		10'd2, 		// xdiff
+		10'd7, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd622, 	// right_bound
+		10'd18, 		// left_bound
+		10'd45, 		// top_bound
+		10'd200, 	// bottom_bound
+		aleg4x, 	// objectx
+		aleg4y		// objecty
+								);								
+moving_object aleg5(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd215, 	// xstart
+		10'd176, 	// ystart
+		10'd2, 		// xdiff
+		10'd10, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd633, 	// right_bound
+		10'd29, 		// left_bound
+		10'd36, 		// top_bound
+		10'd194, 	// bottom_bound
+		aleg5x, 	// objectx
+		aleg5y		// objecty
+								);	
+moving_object aleg6(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd217, 	// xstart
+		10'd184, 	// ystart
+		10'd2, 		// xdiff
+		10'd8, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd635, 	// right_bound
+		10'd31, 		// left_bound
+		10'd44, 		// top_bound
+		10'd200, 	// bottom_bound
+		aleg6x, 	// objectx
+		aleg6y		// objecty
+								);
+moving_object aleg7(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd218, 	// xstart
+		10'd176, 	// ystart
+		10'd2, 		// xdiff
+		10'd5, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd636, 	// right_bound
+		10'd32, 		// left_bound
+		10'd36, 		// top_bound
+		10'd189, 	// bottom_bound
+		aleg7x, 	// objectx
+		aleg7y		// objecty
+								);	
+moving_object aleg8(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd220, 	// xstart
+		10'd179, 	// ystart
+		10'd2, 		// xdiff
+		10'd8, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd638, 	// right_bound
+		10'd34, 		// left_bound
+		10'd39, 		// top_bound
+		10'd197, 	// bottom_bound
+		aleg8x, 	// objectx
+		aleg8y		// objecty
+								);	
+	
+moving_object aeyeball1(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd202, 	// xstart
+		10'd167, 	// ystart
+		10'd2, 		// xdiff
+		10'd2, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd621, 	// right_bound
+		10'd16, 		// left_bound
+		10'd27, 		// top_bound
+		10'd177, 	// bottom_bound
+		aeyeball1x, 	// objectx
+		aeyeball1y		// objecty
+								);
+moving_object aeyeball2(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd208, 	// xstart
+		10'd159, 	// ystart
+		10'd2, 		// xdiff
+		10'd2, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd627, 	// right_bound
+		10'd22, 		// left_bound
+		10'd19, 		// top_bound
+		10'd169, 	// bottom_bound
+		aeyeball2x, 	// objectx
+		aeyeball2y		// objecty
+								);
+moving_object aeyeball3(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd216, 	// xstart
+		10'd167, 	// ystart
+		10'd2, 		// xdiff
+		10'd2, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd635, 	// right_bound
+		10'd30, 		// left_bound
+		10'd27, 		// top_bound
+		10'd177, 	// bottom_bound
+		aeyeball3x, 	// objectx
+		aeyeball3y		// objecty
+								);
+	
+	
+moving_object aeyeleft(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd200, 	// xstart
+		10'd165, 	// ystart
+		10'd6, 		// xdiff
+		10'd6, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd623, 	// right_bound
+		10'd14, 		// left_bound
+		10'd25, 		// top_bound
+		10'd179, 	// bottom_bound
+		aeyeleftx, 	// objectx
+		aeyelefty		// objecty
+								);	
+moving_object aeyecenter(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd207, 	// xstart
+		10'd157, 	// ystart
+		10'd6, 		// xdiff
+		10'd6, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd630, 	// right_bound
+		10'd21, 		// left_bound
+		10'd17, 		// top_bound
+		10'd171, 	// bottom_bound
+		aeyecenterx, 	// objectx
+		aeyecentery		// objecty
+								);	
+moving_object aeyeright(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd214, 	// xstart
+		10'd165, 	// ystart
+		10'd6, 		// xdiff
+		10'd6, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd637, 	// right_bound
+		10'd28, 		// left_bound
+		10'd25, 		// top_bound
+		10'd179, 	// bottom_bound
+		aeyerightx, 	// objectx
+		aeyerighty		// objecty
+								);	
+	
+	moving_object ahead1(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd200, 	// xstart
+		10'd150, 	// ystart
+		10'd20, 		// xdiff
+		10'd2, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd638, 	// right_bound
+		10'd12, 		// left_bound
+		10'd10, 		// top_bound
+		10'd160, 	// bottom_bound
+		ahead1x, 	// objectx
+		ahead1y		// objecty
+								);		
+moving_object ahead2(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd198, 	// xstart
+		10'd152, 	// ystart
+		10'd24, 		// xdiff
+		10'd2, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd639, 	// right_bound
+		10'd11, 		// left_bound
+		10'd12, 		// top_bound
+		10'd162, 	// bottom_bound
+		ahead2x, 	// objectx
+		ahead2y		// objecty
+								);
+moving_object ahead3(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd196, 	// xstart
+		10'd154, 	// ystart
+		10'd28, 		// xdiff
+		10'd20, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd640, 	// right_bound
+		10'd10, 		// left_bound
+		10'd14, 		// top_bound
+		10'd182, 	// bottom_bound
+		ahead3x,// objectx
+		ahead3y // objecty
+								);		
+moving_object ahead4(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd198, 	// xstart
+		10'd174, 	// ystart
+		10'd24, 		// xdiff
+		10'd2, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd639, 	// right_bound
+		10'd11, 		// left_bound
+		10'd34, 		// top_bound
+		10'd184, 	// bottom_bound
+		ahead4x, 	// objectx
+		ahead4y		// objecty
+								);		
+	
+	
+moving_object leg1(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd99, 	// xstart
+		10'd126, 	// ystart
+		10'd2, 		// xdiff
+		10'd8, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd618, 	// right_bound
+		10'd13, 		// left_bound
+		10'd36, 		// top_bound
+		10'd192, 	// bottom_bound
+		leg1x, 	// objectx
+		leg1y		// objecty
+								);	
+moving_object leg2(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd97, 	// xstart
+		10'd132, 	// ystart
+		10'd2, 		// xdiff
+		10'd8, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd616, 	// right_bound
+		10'd11, 		// left_bound
+		10'd42, 		// top_bound
+		10'd198, 	// bottom_bound
+		leg2x, 	// objectx
+		leg2y		// objecty
+								);								
+moving_object leg3(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd106, 	// xstart
+		10'd126, 	// ystart
+		10'd2, 		// xdiff
+		10'd11, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd624, 	// right_bound
+		10'd20, 		// left_bound
+		10'd36, 		// top_bound
+		10'd195, 	// bottom_bound
+		leg3x, 	// objectx
+		leg3y		// objecty
+								);	
+moving_object leg4(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd104, 	// xstart
+		10'd135, 	// ystart
+		10'd2, 		// xdiff
+		10'd7, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd622, 	// right_bound
+		10'd18, 		// left_bound
+		10'd45, 		// top_bound
+		10'd200, 	// bottom_bound
+		leg4x, 	// objectx
+		leg4y		// objecty
+								);								
+moving_object leg5(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd115, 	// xstart
+		10'd126, 	// ystart
+		10'd2, 		// xdiff
+		10'd10, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd633, 	// right_bound
+		10'd29, 		// left_bound
+		10'd36, 		// top_bound
+		10'd194, 	// bottom_bound
+		leg5x, 	// objectx
+		leg5y		// objecty
+								);	
+moving_object leg6(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd117, 	// xstart
+		10'd134, 	// ystart
+		10'd2, 		// xdiff
+		10'd8, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd635, 	// right_bound
+		10'd31, 		// left_bound
+		10'd44, 		// top_bound
+		10'd200, 	// bottom_bound
+		leg6x, 	// objectx
+		leg6y		// objecty
+								);
+moving_object leg7(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd118, 	// xstart
+		10'd126, 	// ystart
+		10'd2, 		// xdiff
+		10'd5, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd636, 	// right_bound
+		10'd32, 		// left_bound
+		10'd36, 		// top_bound
+		10'd189, 	// bottom_bound
+		leg7x, 	// objectx
+		leg7y		// objecty
+								);	
+moving_object leg8(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd120, 	// xstart
+		10'd129, 	// ystart
+		10'd2, 		// xdiff
+		10'd8, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd638, 	// right_bound
+		10'd34, 		// left_bound
+		10'd39, 		// top_bound
+		10'd197, 	// bottom_bound
+		leg8x, 	// objectx
+		leg8y		// objecty
+								);	
+	
+moving_object eyeball1(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd102, 	// xstart
+		10'd117, 	// ystart
+		10'd2, 		// xdiff
+		10'd2, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd621, 	// right_bound
+		10'd16, 		// left_bound
+		10'd27, 		// top_bound
+		10'd177, 	// bottom_bound
+		eyeball1x, 	// objectx
+		eyeball1y		// objecty
+								);
+moving_object eyeball2(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd108, 	// xstart
+		10'd109, 	// ystart
+		10'd2, 		// xdiff
+		10'd2, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd627, 	// right_bound
+		10'd22, 		// left_bound
+		10'd19, 		// top_bound
+		10'd169, 	// bottom_bound
+		eyeball2x, 	// objectx
+		eyeball2y		// objecty
+								);
+moving_object eyeball3(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd116, 	// xstart
+		10'd117, 	// ystart
+		10'd2, 		// xdiff
+		10'd2, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd635, 	// right_bound
+		10'd30, 		// left_bound
+		10'd27, 		// top_bound
+		10'd177, 	// bottom_bound
+		eyeball3x, 	// objectx
+		eyeball3y		// objecty
+								);
+	
+	
+moving_object eyeleft(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd100, 	// xstart
+		10'd115, 	// ystart
+		10'd6, 		// xdiff
+		10'd6, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd623, 	// right_bound
+		10'd14, 		// left_bound
+		10'd25, 		// top_bound
+		10'd179, 	// bottom_bound
+		eyeleftx, 	// objectx
+		eyelefty		// objecty
+								);	
+moving_object eyecenter(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd107, 	// xstart
+		10'd107, 	// ystart
+		10'd6, 		// xdiff
+		10'd6, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd630, 	// right_bound
+		10'd21, 		// left_bound
+		10'd17, 		// top_bound
+		10'd171, 	// bottom_bound
+		eyecenterx, 	// objectx
+		eyecentery		// objecty
+								);	
+moving_object eyeright(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd114, 	// xstart
+		10'd115, 	// ystart
+		10'd6, 		// xdiff
+		10'd6, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd637, 	// right_bound
+		10'd28, 		// left_bound
+		10'd25, 		// top_bound
+		10'd179, 	// bottom_bound
+		eyerightx, 	// objectx
+		eyerighty		// objecty
+								);	
+	
+	moving_object head1(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd100, 	// xstart
+		10'd100, 	// ystart
+		10'd20, 		// xdiff
+		10'd2, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd638, 	// right_bound
+		10'd12, 		// left_bound
+		10'd10, 		// top_bound
+		10'd160, 	// bottom_bound
+		head1x, 	// objectx
+		head1y		// objecty
+								);		
+moving_object head2(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd98, 	// xstart
+		10'd102, 	// ystart
+		10'd24, 		// xdiff
+		10'd2, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd639, 	// right_bound
+		10'd11, 		// left_bound
+		10'd12, 		// top_bound
+		10'd162, 	// bottom_bound
+		head2x, 	// objectx
+		head2y		// objecty
+								);
+moving_object head3(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd96, 	// xstart
+		10'd104, 	// ystart
+		10'd28, 		// xdiff
+		10'd20, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd640, 	// right_bound
+		10'd10, 		// left_bound
+		10'd14, 		// top_bound
+		10'd182, 	// bottom_bound
+		head3x,// objectx
+		head3y // objecty
+								);		
+moving_object head4(
+		clk, 			
+		rst, 			
+		x, 
+		y, 			
+		10'd98, 	// xstart
+		10'd124, 	// ystart
+		10'd24, 		// xdiff
+		10'd2, 	// ydiff
+		10'd5, 		// xspeed
+		10'd5, 		// yspeed
+		10'd639, 	// right_bound
+		10'd11, 		// left_bound
+		10'd34, 		// top_bound
+		10'd184, 	// bottom_bound
+		head4x, 	// objectx
+		head4y		// objecty
+								);	
+									
+
+		user_object aim(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd318, 	// xstart
+		10'd300, 	// ystart
+		10'd4, 	// xdiff
+		10'd10,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd624, 	// right_bound
+		10'd26, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		aimx, 	// objectx
+		aimy		// objecty	
+		);						
+		user_object gunbodyL1(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd302, 	// xstart
+		10'd428, 	// ystart
+		10'd8, 	// xdiff
+		10'd52,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd612, 	// right_bound
+		10'd10, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunbodyL1x, 	// objectx
+		gunbodyL1y		// objecty	
+		);
+		user_object gunbodyL2(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd306, 	// xstart
+		10'd420, 	// ystart
+		10'd4, 	// xdiff
+		10'd8,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd612, 	// right_bound
+		10'd14, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunbodyL2x, 	// objectx
+		gunbodyL2y		// objecty	
+		);
+		user_object gunbodyL3(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd310, 	// xstart
+		10'd328, 	// ystart
+		10'd2, 	// xdiff
+		10'd136,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd614, 	// right_bound
+		10'd18, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunbodyL3x, 	// objectx
+		gunbodyL3y		// objecty	
+		);
+		user_object gunbodyL4(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd312, 	// xstart
+		10'd326, 	// ystart
+		10'd4, 	// xdiff
+		10'd106,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd618, 	// right_bound
+		10'd20, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunbodyL4x, 	// objectx
+		gunbodyL4y		// objecty	
+		);
+		user_object gunbodyL5(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd312, 	// xstart
+		10'd432, 	// ystart
+		10'd2, 	// xdiff
+		10'd16,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd616, 	// right_bound
+		10'd20, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunbodyL5x, 	// objectx
+		gunbodyL5y		// objecty	
+		);
+		user_object gunhead1(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd310, 	// xstart
+		10'd464, 	// ystart
+		10'd2, 	// xdiff
+		10'd16,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd614, 	// right_bound
+		10'd18, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunhead1x, 	// objectx
+		gunhead1y		// objecty	
+		);
+			user_object gunhead2(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd312, 	// xstart
+		10'd442, 	// ystart
+		10'd2, 	// xdiff
+		10'd38,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd616, 	// right_bound
+		10'd20, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunhead2x, 	// objectx
+		gunhead2y		// objecty	
+		);
+			user_object gunhead3(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd314, 	// xstart
+		10'd432, 	// ystart
+		10'd2, 	// xdiff
+		10'd48,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd618, 	// right_bound
+		10'd22, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunhead3x, 	// objectx
+		gunhead3y		// objecty	
+		);
+			user_object gunhead4(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd316, 	// xstart
+		10'd310, 	// ystart
+		10'd8, 	// xdiff
+		10'd170,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd626, 	// right_bound
+		10'd24, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunhead4x, 	// objectx
+		gunhead4y		// objecty	
+		);
+			user_object gunhead5(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd324, 	// xstart
+		10'd432, 	// ystart
+		10'd2, 	// xdiff
+		10'd48,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd628, 	// right_bound
+		10'd32, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunhead5x, 	// objectx
+		gunhead5y		// objecty	
+		);
+			user_object gunhead6(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd326, 	// xstart
+		10'd442, 	// ystart
+		10'd2, 	// xdiff
+		10'd38,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd630, 	// right_bound
+		10'd34, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunhead6x, 	// objectx
+		gunhead6y		// objecty	
+		);
+			user_object gunhead7(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd328, 	// xstart
+		10'd464, 	// ystart
+		10'd2, 	// xdiff
+		10'd16,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd632, 	// right_bound
+		10'd36, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunhead7x, 	// objectx
+		gunhead7y		// objecty	
+		);
+			user_object gunhead8(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd316, 	// xstart
+		10'd304, 	// ystart
+		10'd2, 	// xdiff
+		10'd6,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd620, 	// right_bound
+		10'd24, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunhead8x, 	// objectx
+		gunhead8y		// objecty	
+		);
+		user_object gunhead9(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd322, 	// xstart
+		10'd304, 	// ystart
+		10'd2, 	// xdiff
+		10'd6,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd626, 	// right_bound
+		10'd30, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunhead9x, 	// objectx
+		gunhead9y		// objecty	
+		);
+		user_object gunbodyR1(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd330, 	// xstart
+		10'd428, 	// ystart
+		10'd8, 	// xdiff
+		10'd52,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd640, 	// right_bound
+		10'd38, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunbodyR1x, 	// objectx
+		gunbodyR1y		// objecty	
+		);
+		user_object gunbodRL2(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd330, 	// xstart
+		10'd420, 	// ystart
+		10'd4, 	// xdiff
+		10'd8,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd636, 	// right_bound
+		10'd38, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunbodyR2x, 	// objectx
+		gunbodyR2y		// objecty	
+		);
+		user_object gunbodyR3(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd328, 	// xstart
+		10'd328, 	// ystart
+		10'd2, 	// xdiff
+		10'd136,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd632, 	// right_bound
+		10'd36, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunbodyR3x, 	// objectx
+		gunbodyR3y		// objecty	
+		);
+		user_object gunbodyR4(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd324, 	// xstart
+		10'd326, 	// ystart
+		10'd4, 	// xdiff
+		10'd106,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd630, 	// right_bound
+		10'd32, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunbodyR4x, 	// objectx
+		gunbodyR4y		// objecty	
+		);
+		user_object gunbodyR5(
+		clk, 
+		rst,
+		x, 
+		y, 
+		Right_Gun,
+		Left_Gun,
+		10'd326, 	// xstart
+		10'd432, 	// ystart
+		10'd2, 	// xdiff
+		10'd16,		// ydiff
+		10'd10, 		// xspeed
+		10'd10, 		// yspeed
+		10'd630, 	// right_bound
+		10'd34, 		// left_bound
+		10'd250, 	// top_bound
+		10'd480, 	// bottom_bound
+		gunbodyR5x, 	// objectx
+		gunbodyR5y		// objecty	
+		);
+	
+	// draws everything onto the screen every clock cycle
+	/* should be:
+		if (moving objects)
+		else if (stationary objects)
+		else (background) */
+	always @ (posedge clk or negedge rst)
+	begin
+		if (rst == 1'b0)
+		begin
+			color <= 0;
+		end
+		else 
+		begin
+			// draw the object
+			
+			
+			if (eyeball1x & eyeball1y)
+			begin
+				color <= white;
+			end
+			else if (eyeball2x & eyeball2y)
+			begin
+				color <= white;
+			end
+			else if (eyeball3x & eyeball3y)
+			begin
+				color <= white;
+			end
+			
+			
+			else if (eyerightx & eyerighty)
+			begin
+				color <= blue;
+			end
+			else if (eyecenterx & eyecentery)
+			begin
+				color <= blue;
+			end
+			else if (eyeleftx & eyelefty)
+			begin
+				color <= blue;
+			end
+			
+			else if (head1x & head1y)
+			begin
+				color <= red;
+			end
+			else if (head2x & head2y)
+			begin
+				color <= red;
+			end
+			else if (head3x & head3y)
+			begin
+				color <= red;
+			end
+			else if (head4x & head4y)
+			begin
+				color <= red;
+			end
+			
+			else if (leg1x & leg1y)
+			begin
+				color <= green;
+			end
+			else if (leg2x & leg2y)
+			begin
+				color <= green;
+			end
+			else if (leg3x & leg3y)
+			begin
+				color <= green;
+			end
+			else if (leg4x & leg4y)
+			begin
+				color <= green;
+			end
+			else if (leg5x & leg5y)
+			begin
+				color <= green;
+			end
+			else if (leg6x & leg6y)
+			begin
+				color <= green;
+			end
+			else if (leg7x & leg7y)
+			begin
+				color <= green;
+			end
+			else if (leg8x & leg8y)
+			begin
+				color <= green;
+			end
+			
+			else if (aeyeball1x & aeyeball1y)
+			begin
+				color <= white;
+			end
+			else if (aeyeball2x & aeyeball2y)
+			begin
+				color <= white;
+			end
+			else if (aeyeball3x & aeyeball3y)
+			begin
+				color <= white;
+			end
+			
+			
+			else if (aeyerightx & aeyerighty)
+			begin
+				color <= blue;
+			end
+			else if (aeyecenterx & aeyecentery)
+			begin
+				color <= blue;
+			end
+			else if (aeyeleftx & aeyelefty)
+			begin
+				color <= blue;
+			end
+			
+			else if (ahead1x & ahead1y)
+			begin
+				color <= yellow;
+			end
+			else if (ahead2x & ahead2y)
+			begin
+				color <= yellow;
+			end
+			else if (ahead3x & ahead3y)
+			begin
+				color <= yellow;
+			end
+			else if (ahead4x & ahead4y)
+			begin
+				color <= yellow;
+			end
+			
+			else if (aleg1x & aleg1y)
+			begin
+				color <= {8'd150,8'd150,8'd150};
+			end
+			else if (aleg2x & aleg2y)
+			begin
+				color <= {8'd150,8'd150,8'd150};
+			end
+			else if (aleg3x & aleg3y)
+			begin
+				color <= {8'd150,8'd150,8'd150};
+			end
+			else if (aleg4x & aleg4y)
+			begin
+				color <= {8'd150,8'd150,8'd150};;
+			end
+			else if (aleg5x & aleg5y)
+			begin
+				color <= {8'd150,8'd150,8'd150};
+			end
+			else if (aleg6x & aleg6y)
+			begin
+				color <= {8'd150,8'd150,8'd150};
+			end
+			else if (aleg7x & aleg7y)
+			begin
+				color <= {8'd150,8'd150,8'd150};
+			end
+			else if (aleg8x & aleg8y)
+			begin
+				color <= {8'd150,8'd150,8'd150};
+			end
+			
+			
+			else if (aimx & aimy)
+			begin
+				color <= red;
+			end
+			else if (gunbodyL1x & gunbodyL1y)
+			begin
+				color <= white;
+			end
+			else if (gunbodyL2x & gunbodyL2y)
+			begin
+				color <= white;
+			end
+			else if (gunbodyL3x & gunbodyL3y)
+			begin
+				color <= white;
+			end
+			else if (gunbodyL4x & gunbodyL4y)
+			begin
+				color <= white;
+			end
+			else if (gunbodyL5x & gunbodyL5y)
+			begin
+				color <= white;
+			end
+			else if (gunhead1x & gunhead1y)
+			begin
+				color <= {8'd150,8'd150,8'd150};
+			end
+			else if (gunhead2x & gunhead2y)
+			begin
+				color <= {8'd150,8'd150,8'd150};
+			end
+			else if (gunhead3x & gunhead3y)
+			begin
+				color <= {8'd150,8'd150,8'd150};
+			end
+			else if (gunhead4x & gunhead4y)
+			begin
+				color <= {8'd150,8'd150,8'd150};
+			end
+			else if (gunhead5x & gunhead5y)
+			begin
+				color <= {8'd150,8'd150,8'd150};
+			end
+			else if (gunhead6x & gunhead6y)
+			begin
+				color <= {8'd150,8'd150,8'd150};
+			end
+			else if (gunhead7x & gunhead7y)
+			begin
+				color <= {8'd150,8'd150,8'd150};
+			end
+			else if (gunhead8x & gunhead8y)
+			begin
+				color <= {8'd150,8'd150,8'd150};
+			end
+			else if (gunhead9x & gunhead9y)
+			begin
+				color <= {8'd150,8'd150,8'd150};
+			end
+			else if (gunbodyR1x & gunbodyR1y)
+			begin
+				color <= white;
+			end
+			else if (gunbodyR2x & gunbodyR2y)
+			begin
+				color <= white;
+			end
+			else if (gunbodyR3x & gunbodyR3y)
+			begin
+				color <= white;
+			end
+			else if (gunbodyR4x & gunbodyR4y)
+			begin
+				color <= white;
+			end
+			else if (gunbodyR5x & gunbodyR5y)
+			begin
+				color <= white;
+			end
+			
+			
+			
+			
+
+			// draw the platform the object is on
+			else if (platformx & platformy)
+			begin
+				color <= blue;
+			end
+			// draw the background
+			else
+			begin
+				color <= black;
+			end
+		end
+	end
+
+endmodule 
